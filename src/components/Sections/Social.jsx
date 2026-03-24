@@ -29,105 +29,7 @@ const stringToColor = (str) => {
   return `hsl(${Math.abs(hash) % 360}, 65%, 55%)`;
 };
 
-/* ── WOW: Expandable App Overlay (Wireframes) ── */
-const AppOverlay = ({ app, onClose }) => {
-  return (
-    <motion.div
-      className="app-overlay-bg"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={onClose}
-    >
-      <motion.div
-        className="app-overlay-window"
-        initial={{ y: '20%', opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: '20%', opacity: 0 }}
-        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-        onClick={(e) => e.stopPropagation()}
-        style={{ '--app-color': app.color }}
-      >
-        <div className="app-window-header">
-          <div className="app-window-title">
-            <span style={{ color: app.color }}>{app.icon}</span> 
-            <strong>{app.name}</strong> Interface
-          </div>
-          <button className="close-btn" onClick={onClose}>×</button>
-        </div>
-        
-        <div className="app-window-content">
-          {app.id === 1 && (
-             <div className="wf-search">
-                <div className="wf-search-bar" />
-                {[1,2,3,4].map(i => <div key={i} className="wf-search-result" />)}
-             </div>
-          )}
-          {app.id === 2 && (
-             <div className="wf-video">
-                <div className="wf-video-player"><Video size={48} color="rgba(255,255,255,0.2)"/></div>
-                <div className="wf-video-title" />
-                <div className="wf-video-desc" />
-             </div>
-          )}
-          {app.id === 3 && (
-             <div className="wf-shop">
-                {[1,2,3,4,5,6].map(i => <div key={i} className="wf-shop-item" />)}
-             </div>
-          )}
-          {app.id === 4 && (
-             <div className="wf-social">
-                {[1,2,3].map(i => (
-                  <div key={i} className="wf-social-feed-item">
-                    <div className="wf-avatar"/>
-                    <div className="wf-lines"><div className="wf-line"/><div className="wf-line half"/></div>
-                  </div>
-                ))}
-             </div>
-          )}
-          {app.id === 5 && (
-             <div className="wf-photo">
-                <div className="wf-photo-hero" />
-                <div className="wf-photo-grid">
-                  {[1,2,3,4].map(i => <div key={i} className="wf-photo-thumb" />)}
-                </div>
-             </div>
-          )}
-          {app.id === 6 && (
-             <div className="wf-dating">
-                <div className="wf-dating-card">
-                  <div className="wf-dating-photo"><Heart size={48} color="rgba(255,255,255,0.1)"/></div>
-                  <div className="wf-dating-actions">
-                     <div className="wf-btn nope">×</div>
-                     <div className="wf-btn like">♥</div>
-                  </div>
-                </div>
-             </div>
-          )}
-          {app.id === 7 && (
-             <div className="wf-network">
-                {[1,2,3,4].map(i => (
-                  <div key={i} className="wf-network-contact">
-                    <div className="wf-avatar squared"/>
-                    <div className="wf-info"><div className="wf-line"/><div className="wf-line short"/></div>
-                  </div>
-                ))}
-             </div>
-          )}
-          {app.id === 8 && (
-             <div className="wf-mobile">
-                <div className="wf-mobile-widgets">
-                   <div className="wf-widget large" />
-                   <div className="wf-widget small" />
-                   <div className="wf-widget small" />
-                </div>
-             </div>
-          )}
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-};
+
 
 /* ── WOW: Expandable Post Overlay ── */
 const PostOverlay = ({ post, likedPosts, toggleLike, idx, onClose, onAddReply }) => {
@@ -214,9 +116,9 @@ const PostOverlay = ({ post, likedPosts, toggleLike, idx, onClose, onAddReply })
 
 const Social = ({ active }) => {
   const [posts, setPosts] = useState(INITIAL_POSTS);
-  const [likedPosts, setLikedPosts] = useState(new Set());
+  const [likedPosts, setLikedPosts] = useState({});
   const [expandedPost, setExpandedPost] = useState(null);
-  const [activeApp, setActiveApp] = useState(null);
+
 
   useEffect(() => {
     if (!active) return;
@@ -230,17 +132,7 @@ const Social = ({ active }) => {
     );
   }, [active]);
 
-  const toggleLike = (i) => {
-    setLikedPosts(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(i)) {
-        newSet.delete(i);
-      } else {
-        newSet.add(i);
-      }
-      return newSet;
-    });
-  };
+  const toggleLike = (i) => setLikedPosts(prev => ({ ...prev, [i]: !prev[i] }));
   
   const handleAddReply = (idx, replyObj) => {
     setPosts(prev => {
@@ -270,7 +162,6 @@ const Social = ({ active }) => {
                 whileHover={{ scale: 1.08, y: -4 }}
                 whileTap={{ scale: 0.95 }}
                 className="app-card"
-                onClick={() => setActiveApp(app)}
               >
                 <div className="app-icon-wrap">
                   <div className="app-icon" style={{ background: app.color }}>{app.icon}</div>
@@ -303,10 +194,10 @@ const Social = ({ active }) => {
                       <motion.button
                         whileTap={{ scale: 1.3 }}
                         onClick={(e) => { e.stopPropagation(); toggleLike(i); }}
-                        className={`like-btn ${likedPosts.has(i) ? 'liked' : ''}`}
+                        className={`like-btn ${likedPosts[i] ? 'liked' : ''}`}
                       >
-                        <Heart size={14} fill={likedPosts.has(i) ? '#ef4444' : 'none'} />
-                        <span>{post.likes + (likedPosts.has(i) ? 1 : 0)}</span>
+                        <Heart size={14} fill={likedPosts[i] ? '#ef4444' : 'none'} />
+                        <span>{post.likes + (likedPosts[i] ? 1 : 0)}</span>
                       </motion.button>
                       <button className="action-btn"><MessageCircle size={14} /><span>Reply</span></button>
                       <button className="action-btn"><Share2 size={14} /><span>Share</span></button>
@@ -332,94 +223,11 @@ const Social = ({ active }) => {
             onAddReply={handleAddReply}
           />
         )}
-        {activeApp !== null && (
-          <AppOverlay
-            app={activeApp}
-            onClose={() => setActiveApp(null)}
-          />
-        )}
+
       </AnimatePresence>
 
       <style jsx="true">{`
-        /* App Overlay General */
-        .app-overlay-window {
-          background: #ffffff;
-          width: 90%;
-          max-width: 500px;
-          border-radius: 20px;
-          overflow: hidden;
-          box-shadow: 0 30px 60px rgba(0,0,0,0.15);
-          display: flex;
-          flex-direction: column;
-        }
-        .app-window-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 1.2rem;
-          border-bottom: 1px solid #f0f0f0;
-          background: #fdfdfd;
-        }
-        .app-window-title {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          font-size: 1.1rem;
-          color: #333;
-        }
-        .app-window-content {
-          padding: 1.5rem;
-          background: #fafafa;
-          height: 400px;
-          overflow-y: auto;
-        }
 
-        /* Generic Wireframe Elements */
-        .wf-avatar { width: 40px; height: 40px; border-radius: 50%; background: #eee; }
-        .wf-avatar.squared { border-radius: 8px; }
-        .wf-line { height: 12px; background: #eee; border-radius: 6px; margin-bottom: 8px; width: 100%; }
-        .wf-line.half { width: 60%; }
-        .wf-line.short { width: 40%; }
-        
-        /* 1. Search */
-        .wf-search-bar { height: 45px; background: #fff; border: 2px solid #eee; border-radius: 24px; margin-bottom: 2rem; }
-        .wf-search-result { height: 60px; background: #fff; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-        
-        /* 2. Video */
-        .wf-video-player { height: 200px; background: var(--app-color); border-radius: 12px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; opacity: 0.8; }
-        .wf-video-title { height: 20px; background: #ddd; border-radius: 4px; width: 80%; margin-bottom: 0.5rem; }
-        .wf-video-desc { height: 12px; background: #eee; border-radius: 4px; width: 50%; }
-
-        /* 3. Shop */
-        .wf-shop { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .wf-shop-item { height: 140px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; }
-
-        /* 4. Social */
-        .wf-social-feed-item { display: flex; gap: 1rem; background: #fff; padding: 1rem; border-radius: 12px; margin-bottom: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .wf-lines { flex: 1; margin-top: 5px; }
-
-        /* 5. Photo */
-        .wf-photo-hero { height: 180px; background: #eee; border-radius: 12px; margin-bottom: 1rem; }
-        .wf-photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
-        .wf-photo-thumb { height: 100px; background: #eee; border-radius: 8px; }
-
-        /* 6. Dating */
-        .wf-dating-card { height: 320px; background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #f0f0f0; }
-        .wf-dating-photo { flex: 1; background: #f5f5f5; display: flex; align-items: center; justify-content: center; }
-        .wf-dating-actions { height: 80px; display: flex; align-items: center; justify-content: space-evenly; background: #fff; }
-        .wf-btn { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
-        .wf-btn.nope { color: #fe3c72; border: 2px solid #fe3c72; }
-        .wf-btn.like { color: #4CAF50; border: 2px solid #4CAF50; }
-
-        /* 7. Network */
-        .wf-network-contact { display: flex; gap: 1rem; padding: 1rem; background: #fff; border-bottom: 1px solid #f5f5f5; align-items: center; }
-        .wf-info { flex: 1; }
-
-        /* 8. Mobile */
-        .wf-mobile-widgets { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .wf-widget { background: #fff; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; }
-        .wf-widget.large { grid-column: span 2; height: 150px; background: linear-gradient(135deg, #f5f7fa, #c3cfe2); }
-        .wf-widget.small { height: 120px; }
 
         .social {
 
