@@ -47,14 +47,14 @@ const findPath = (nodes, startId, endId) => {
 
 /* ── Data Packet ── */
 const DataPacket = ({ x1, y1, x2, y2, delay }) => (
-  <circle r="0.5" fill="#00ff41" filter="url(#glow)">
-    <animateMotion
-      dur="3s"
-      repeatCount="indefinite"
-      begin={`${delay}s`}
-      path={`M ${x1} ${y1} L ${x2} ${y2}`}
-    />
-  </circle>
+  <g>
+    <circle r="1.5" fill="rgba(0,255,65,0.3)">
+      <animateMotion dur="3s" repeatCount="indefinite" begin={`${delay}s`} path={`M ${x1} ${y1} L ${x2} ${y2}`} />
+    </circle>
+    <circle r="0.5" fill="#00ff41">
+      <animateMotion dur="3s" repeatCount="indefinite" begin={`${delay}s`} path={`M ${x1} ${y1} L ${x2} ${y2}`} />
+    </circle>
+  </g>
 );
 
 /* ── Terminal Log ── */
@@ -190,16 +190,7 @@ const Arpanet = ({ active }) => {
         onPointerCancel={handlePointerUp}
         style={{ touchAction: 'none' }}
       >
-        <defs>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="0.5" result="coloredBlur" />
-            <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
-          </filter>
-          <filter id="glow-strong">
-            <feGaussianBlur stdDeviation="1.2" result="coloredBlur" />
-            <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
-          </filter>
-        </defs>
+
 
         {/* Lines */}
         {nodes.map((node) =>
@@ -255,10 +246,15 @@ const Arpanet = ({ active }) => {
               )}
               <circle
                 cx={node.x} cy={node.y}
+                r={isHovered ? 4 : isOnPath ? 3 : 2}
+                fill={isHovered ? 'rgba(0,255,65,0.2)' : isOnPath ? 'rgba(0,255,65,0.15)' : 'rgba(0,255,65,0.08)'}
+                style={{ transition: 'all 0.3s ease', opacity: isDimmed ? 0.3 : 1 }}
+              />
+              <circle
+                cx={node.x} cy={node.y}
                 r={isHovered ? 1.8 : isOnPath ? 1.4 : 1}
                 fill={isHovered ? '#00ff41' : isOnPath ? 'rgba(0,255,65,0.8)' : 'rgba(0,255,65,0.6)'}
                 stroke="#00ff41" strokeWidth="0.15"
-                filter={isHovered ? 'url(#glow-strong)' : 'url(#glow)'}
                 style={{ transition: 'all 0.3s ease', opacity: isDimmed ? 0.3 : 1 }}
               />
               {(isHovered || isOnPath) && (
@@ -266,7 +262,6 @@ const Arpanet = ({ active }) => {
                   x={node.x + 2.5} y={node.y + 0.5}
                   fill="#00ff41" fontSize="1.4"
                   fontFamily="var(--font-mono)"
-                  filter="url(#glow)"
                   style={{ opacity: isHovered ? 1 : 0.7 }}
                 >
                   {node.label}

@@ -5,6 +5,15 @@ import gsap from 'gsap';
 const FadingParticles = () => {
   const canvasRef = useRef(null);
   const animRef = useRef(null);
+  const isVisible = useRef(true);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisible.current = entry.isIntersecting;
+    });
+    if (canvasRef.current) observer.observe(canvasRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
@@ -31,6 +40,10 @@ const FadingParticles = () => {
     }));
 
     const animate = () => {
+      if (!isVisible.current) {
+        animRef.current = requestAnimationFrame(animate);
+        return;
+      }
       ctx.clearRect(0, 0, W, H);
       particles.forEach((p) => {
         // Gradually decelerate — calming wind-down
@@ -169,6 +182,7 @@ const Epilogue = ({ active }) => {
           font-weight: 700;
           line-height: 1.2;
           letter-spacing: -0.01em;
+          text-shadow: 0 0 20px rgba(255,0,193,0.25);
           animation: epilogue-glow-pulse 3s ease-in-out 3s infinite;
         }
 
@@ -189,17 +203,8 @@ const Epilogue = ({ active }) => {
         }
 
         @keyframes epilogue-glow-pulse {
-          0%, 100% {
-            text-shadow:
-              0 0 10px rgba(255,0,193,0.15),
-              0 0 30px rgba(255,0,193,0.08);
-          }
-          50% {
-            text-shadow:
-              0 0 20px rgba(255,0,193,0.35),
-              0 0 60px rgba(255,0,193,0.15),
-              0 0 100px rgba(0,255,255,0.08);
-          }
+          0%, 100% { opacity: 0.8; }
+          50% { opacity: 1; }
         }
 
         @media (max-width: 1024px) {

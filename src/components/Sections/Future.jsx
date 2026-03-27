@@ -7,6 +7,15 @@ import { Cpu, Globe, Zap, Shield, Hexagon, Sparkles } from 'lucide-react';
 const NeonField = () => {
   const canvasRef = useRef(null);
   const animRef = useRef(null);
+  const isVisible = useRef(true);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisible.current = entry.isIntersecting;
+    });
+    if (canvasRef.current) observer.observe(canvasRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
@@ -32,6 +41,10 @@ const NeonField = () => {
     }));
 
     const animate = () => {
+      if (!isVisible.current) {
+        animRef.current = requestAnimationFrame(animate);
+        return;
+      }
       ctx.clearRect(0, 0, W, H);
       particles.forEach((p) => {
         p.x += p.dx;
@@ -211,11 +224,10 @@ const Future = ({ active }) => {
         .neon-blobs {
           position: absolute; inset: 0;
           background:
-            radial-gradient(circle at 20% 30%, rgba(255,0,193,0.18) 0%, transparent 40%),
-            radial-gradient(circle at 80% 60%, rgba(0,255,255,0.15) 0%, transparent 40%),
-            radial-gradient(circle at 50% 85%, rgba(88,80,236,0.12) 0%, transparent 35%),
-            radial-gradient(circle at 65% 15%, rgba(255,0,100,0.08) 0%, transparent 30%);
-          filter: blur(50px);
+            radial-gradient(circle at 20% 30%, rgba(255,0,193,0.15) 0%, transparent 40%),
+            radial-gradient(circle at 80% 60%, rgba(0,255,255,0.12) 0%, transparent 40%),
+            radial-gradient(circle at 50% 85%, rgba(88,80,236,0.10) 0%, transparent 35%),
+            radial-gradient(circle at 65% 15%, rgba(255,0,100,0.06) 0%, transparent 30%);
           pointer-events: none;
         }
         .grid-floor {
@@ -316,8 +328,8 @@ const Future = ({ active }) => {
         .face-4 { transform: rotateX(90deg) translateZ(100px); }
         .face-5 { transform: rotateX(-90deg) translateZ(100px); }
         .cube-inner {
-          color: rgba(255,255,255,0.5);
-          filter: drop-shadow(0 0 12px rgba(255,0,193,0.4));
+          color: rgba(255,255,255,0.6);
+          /* drop-shadow is too heavy for scroll performance, using flat color */
         }
 
         .tech-pills { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; }

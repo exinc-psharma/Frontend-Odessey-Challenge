@@ -12,6 +12,15 @@ const GlitchBackground = () => {
   const canvasRef = useRef(null);
   const animRef = useRef(null);
   const scrollVelocity = useRef(0);
+  const isVisible = useRef(true);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisible.current = entry.isIntersecting;
+    });
+    if (canvasRef.current) observer.observe(canvasRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
@@ -35,6 +44,10 @@ const GlitchBackground = () => {
     const colors = ['#00ffff', '#ff003c', '#00ff41', '#ffffff', '#111111'];
 
     const animate = () => {
+      if (!isVisible.current) {
+        animRef.current = requestAnimationFrame(animate);
+        return;
+      }
       // Natural decay of velocity back to rest state (constant slight glitch)
       scrollVelocity.current += (0 - scrollVelocity.current) * 0.1;
       const intensity = 0.6 + scrollVelocity.current; // min intensity + scroll boost
