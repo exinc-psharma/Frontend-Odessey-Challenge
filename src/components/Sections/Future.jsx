@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
 import gsap from 'gsap';
 import { Cpu, Globe, Zap, Shield, Hexagon, Sparkles } from 'lucide-react';
 
@@ -19,7 +19,8 @@ const NeonField = () => {
     canvas.height = H * dpr;
     ctx.scale(dpr, dpr);
     const isMobile = W < 768;
-    const count = isMobile ? 35 : 80; // Dense on desktop
+    const isTablet = W >= 768 && W <= 1024;
+    const count = isMobile ? 35 : isTablet ? 50 : 80;
 
     const particles = Array.from({ length: count }, () => ({
       x: Math.random() * W,
@@ -54,7 +55,7 @@ const NeonField = () => {
       });
 
       // Dense connection web
-      const connectDist = isMobile ? 80 : 110;
+      const connectDist = isMobile ? 80 : isTablet ? 95 : 110;
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
@@ -337,6 +338,17 @@ const Future = ({ active }) => {
           font-size: 0.85rem;
           color: rgba(255,255,255,0.35);
           font-style: italic;
+        }
+
+        @media (max-width: 1024px) and (min-width: 769px) {
+          .cube-scene { width: 170px; height: 170px; }
+          .cube-face { width: 170px; height: 170px; }
+          .face-0 { transform: translateZ(85px); }
+          .face-1 { transform: rotateY(90deg) translateZ(85px); }
+          .face-2 { transform: rotateY(180deg) translateZ(85px); }
+          .face-3 { transform: rotateY(-90deg) translateZ(85px); }
+          .face-4 { transform: rotateX(90deg) translateZ(85px); }
+          .face-5 { transform: rotateX(-90deg) translateZ(85px); }
         }
 
         @media (max-width: 768px) {

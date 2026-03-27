@@ -10,6 +10,7 @@ import Arpanet from './components/Sections/Arpanet';
 import DotCom from './components/Sections/DotCom';
 import Social from './components/Sections/Social';
 import Future from './components/Sections/Future';
+import Epilogue from './components/Sections/Epilogue';
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
@@ -18,10 +19,11 @@ gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 /* ── Era definitions for progress bar ── */
 const ERAS = [
   { id: 'hero', label: 'Inception', color: '#00ff41', pos: 0 },
-  { id: 'arpanet', label: 'ARPANET', color: '#00ff41', pos: 25 },
-  { id: 'dotcom', label: 'Dot-Com', color: '#00aaff', pos: 50 },
-  { id: 'social', label: 'Social', color: '#3b82f6', pos: 75 },
-  { id: 'future', label: 'Future', color: '#ff00c1', pos: 100 },
+  { id: 'arpanet', label: 'ARPANET', color: '#00ff41', pos: 20 },
+  { id: 'dotcom', label: 'Dot-Com', color: '#00aaff', pos: 40 },
+  { id: 'social', label: 'Social', color: '#3b82f6', pos: 60 },
+  { id: 'future', label: 'Future', color: '#ff00c1', pos: 80 },
+  { id: 'epilogue', label: 'End', color: '#c084fc', pos: 100 },
 ];
 
 /* ── Interactive Scroll Progress Bar ── */
@@ -39,6 +41,11 @@ const ScrollProgressBar = ({ activeSection, onNavigate }) => {
       end: 'bottom bottom',
       onUpdate: (self) => {
         fill.style.transform = `scaleX(${self.progress})`;
+        if (self.progress > 0.95) {
+          fill.classList.add('completed');
+        } else {
+          fill.classList.remove('completed');
+        }
       },
     });
     return () => st.kill();
@@ -82,6 +89,7 @@ const App = () => {
   const [transitioning, setTransitioning] = useState(false);
   const containerRef = useRef(null);
   const prevSection = useRef('hero');
+  const mainST = useRef(null);
 
   const sections = useMemo(() => [
     { id: 'hero', component: Hero, color: '#0a0a0a', text: '#ffffff', accent: '#00ff41' },
@@ -89,6 +97,7 @@ const App = () => {
     { id: 'dotcom', component: DotCom, color: '#e0e0e0', text: '#333333', accent: '#0066cc' },
     { id: 'social', component: Social, color: '#f5f5f7', text: '#1a1a1a', accent: '#3b82f6' },
     { id: 'future', component: Future, color: '#0f0524', text: '#ffffff', accent: '#ff00c1' },
+    { id: 'epilogue', component: Epilogue, color: '#050510', text: '#ffffff', accent: '#c084fc' },
   ], []);
 
   const updateTheme = useCallback((id, color, text, accent) => {
@@ -117,67 +126,58 @@ const App = () => {
     const sectionEls = gsap.utils.toArray('.section-wrapper');
     const numSections = sectionEls.length;
 
-    /*
-     * SINGLE ScrollTrigger — controls everything:
-     *  - Theme switching based on scroll progress
-     *  - Global snap (evenly spaced)
-     *  - Consistent scroll distance per section
-     *
-     * The container is pinned for the entire scroll distance.
-     * Each section gets exactly 1/(n-1) of the total progress.
-     */
-    const mainST = ScrollTrigger.create({
-      trigger: containerRef.current,
-      start: 'top top',
-      end: 'bottom bottom',
+    gsap.set(sectionEls, { zIndex: (i) => i });
 
-      // Smooth controlled scrub (1s lag)
-      scrub: 1,
-
-      // Custom 1/3 structure snap: magnetic at edges, raw in the middle
-      snap: {
-        snapTo: (progress) => {
-          const interval = 1 / (numSections - 1);
-          const raw = progress / interval;
-          const base = Math.floor(raw);
-          const fraction = raw - base;
-
-          // If they scroll < 40%, drag them back to where they started
-          if (fraction <= 0.40) return base * interval;
-          // If they scroll > 60%, pull them securely to the next page
-          if (fraction >= 0.60) return (base + 1) * interval;
-          // In the dead zone (40% - 60%), snap firmly to whichever page is closest (prevent mid-transition floating)
-          return Math.round(raw) * interval;
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: 'top top',
+        end: '+=5200',
+        scrub: 1,
+        pin: true,
+        onUpdate: (self) => {
+          const rawIndex = self.progress * (numSections - 1);
+          const activeIndex = Math.round(rawIndex);
+          const clamped = Math.min(activeIndex, numSections - 1);
+          const { id, color, text, accent } = sections[clamped];
+          if (prevSection.current !== id) {
+            updateTheme(id, color, text, accent);
+          }
         },
-        duration: { min: 0.2, max: 0.6 },
-        delay: 0.15,
-        ease: 'power1.inOut',
-      },
+      }
+    });
 
-      onUpdate: (self) => {
-        // Determine which section is active based on progress
-        const rawIndex = self.progress * (numSections - 1);
-        const activeIndex = Math.round(rawIndex);
-        const clamped = Math.min(activeIndex, numSections - 1);
-        const { id, color, text, accent } = sections[clamped];
-        if (prevSection.current !== id) {
-          updateTheme(id, color, text, accent);
-        }
-      },
+    mainST.current = tl.scrollTrigger;
+
+    sectionEls.forEach((sec, i) => {
+      if (i === 0) return;
+      const prevSec = sectionEls[i - 1];
+      const isEpilogue = i === numSections - 1;
+      const dur = isEpilogue ? 1.5 : 1; // Epilogue gets extended duration
+
+      tl.to(prevSec, { yPercent: -20, opacity: 0, duration: dur, ease: 'none' }, '+=0')
+        .fromTo(sec, 
+          { yPercent: 100, opacity: 0 }, 
+          { yPercent: 0, opacity: 1, duration: dur, ease: 'none' },
+          '<'
+        );
     });
 
     return () => {
-      mainST.kill();
+      tl.kill();
     };
   }, [loading, sections, updateTheme]);
 
   const navigateToSection = useCallback((id) => {
     const idx = sections.findIndex((s) => s.id === id);
-    if (idx < 0) return;
+    if (idx < 0 || !mainST.current) return;
 
-    // Scroll to the matching section element directly
+    // Direct scroll math based on the single pinned timeline progress
+    const maxScroll = mainST.current.end - mainST.current.start;
+    const targetY = mainST.current.start + (idx / (sections.length - 1)) * maxScroll;
+
     gsap.to(window, {
-      scrollTo: { y: `#section-${id}`, autoKill: true },
+      scrollTo: { y: targetY, autoKill: true },
       duration: 1.2,
       ease: 'power3.inOut',
     });
@@ -202,9 +202,9 @@ const App = () => {
           <Timeline activeSection={activeSection} onNavigate={navigateToSection} />
         )}
 
-        {sections.map(({ id, component: SectionComponent }) => (
+        {sections.map(({ id, component: Component }) => (
           <div key={id} id={`section-${id}`} className="section-wrapper">
-            <SectionComponent active={activeSection === id} />
+            <Component active={activeSection === id} />
           </div>
         ))}
       </div>
@@ -213,19 +213,20 @@ const App = () => {
         .app-container {
           position: relative;
           width: 100%;
+          height: 100vh;
         }
 
-        /* Fixed, consistent section heights */
+        /* Absolute stacked pins handled dynamically by the timeline */
         .section-wrapper {
+          position: absolute;
+          top: 0; left: 0;
           width: 100%;
           height: 100vh;
-          min-height: 100vh;
-          max-height: 100vh;
           display: flex;
           align-items: center;
           justify-content: center;
           overflow: hidden;
-          will-change: transform;
+          will-change: transform, opacity;
         }
 
         /* ── Interactive Progress Bar ── */
@@ -245,10 +246,19 @@ const App = () => {
         }
         .progress-bar-fill {
           height: 100%;
-          background: linear-gradient(90deg, #00ff41, #00aaff, #3b82f6, #ff00c1);
+          background: linear-gradient(90deg, #00ff41, #00aaff, #3b82f6, #ff00c1, #c084fc);
           transform-origin: left center;
           transform: scaleX(0);
           will-change: transform;
+          transition: box-shadow 0.5s ease;
+        }
+        .progress-bar-fill.completed {
+          box-shadow: 0 0 8px rgba(192,132,252,0.6), 0 0 20px rgba(192,132,252,0.3);
+          animation: shimmer 2s ease-in-out infinite;
+        }
+        @keyframes shimmer {
+          0%, 100% { filter: brightness(1); }
+          50% { filter: brightness(1.4); }
         }
         .progress-markers {
           position: relative;

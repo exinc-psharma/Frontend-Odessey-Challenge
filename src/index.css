@@ -106,6 +106,21 @@ h1, h2, h3 {
   }
 }
 
+/* Tablet */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .section {
+    padding: 2rem 1.5rem;
+  }
+}
+
+/* Cursor interaction polish */
+button, .app-card, .retro-window, .pill, .timeline-marker-wrapper, .progress-marker, .browse-btn {
+  cursor: pointer;
+}
+button:hover, .pill:hover {
+  transform: scale(1.03);
+}
+
 @media (max-width: 480px) {
   .section {
     padding: 1rem 0.75rem;

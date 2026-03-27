@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion'; // eslint-disable-line no-unused-vars
 import gsap from 'gsap';
 
 const SITES = [
@@ -308,6 +308,11 @@ const DotCom = ({ active }) => {
           display: inline-block; border-radius: 2px;
         }
         .counter-num-lg { font-weight: bold; font-size: 1rem; }
+
+        @media (max-width: 1024px) and (min-width: 769px) {
+          .windows-container { grid-template-columns: repeat(3, 1fr); gap: 1.2rem; padding: 3.5rem 1.5rem; }
+          .retro-browser { max-width: 90%; }
+        }
 
         @media (max-width: 768px) {
           .windows-container { grid-template-columns: repeat(2, 1fr); gap: 1rem; padding: 3rem 1rem; }

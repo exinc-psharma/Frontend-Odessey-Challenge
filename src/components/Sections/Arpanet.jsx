@@ -319,6 +319,12 @@ const Arpanet = ({ active }) => {
         .terminal-log div { border-left: 1px solid rgba(0,255,65,0.15); padding-left: 8px; margin-bottom: 2px; }
         .network-svg { flex: 1; max-width: 700px; height: 80vh; }
 
+        @media (max-width: 1024px) and (min-width: 769px) {
+          .arpanet { gap: 2rem; padding: 2rem 2rem; }
+          .terminal-panel { width: 300px; min-width: 260px; }
+          .network-svg { height: 60vh; }
+        }
+
         @media (max-width: 768px) {
           .arpanet { flex-direction: column; align-items: center; }
           .terminal-panel { width: 100%; min-width: auto; }

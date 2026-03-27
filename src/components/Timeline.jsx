@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion'; // eslint-disable-line no-unused-vars
 
 const eras = [
   { id: 'hero', label: 'Inception', color: '#00ff41' },
   { id: 'arpanet', label: 'ARPANET', color: '#00ff41' },
   { id: 'dotcom', label: 'Dot-Com', color: '#00aaff' },
   { id: 'social', label: 'Social', color: '#3b82f6' },
-  { id: 'future', label: 'Future', color: '#ff00c1' }
+  { id: 'future', label: 'Future', color: '#ff00c1' },
+  { id: 'epilogue', label: 'End', color: '#c084fc' }
 ];
 
 const Timeline = ({ activeSection, onNavigate }) => {
@@ -42,7 +43,7 @@ const Timeline = ({ activeSection, onNavigate }) => {
               </AnimatePresence>
               
               <div 
-                className={`timeline-dot ${isActive ? 'active' : ''} ${isPast ? 'past' : ''}`}
+                className={`timeline-dot ${isActive ? 'active' : ''} ${isPast ? 'past' : ''} ${isActive && era.id === 'epilogue' ? 'completed-pulse' : ''}`}
                 style={{ '--era-color': era.color }}
               />
             </div>
@@ -114,6 +115,14 @@ const Timeline = ({ activeSection, onNavigate }) => {
           opacity: 0.5;
         }
 
+        .timeline-dot.completed-pulse {
+          animation: completePulse 1.5s ease-in-out 3;
+        }
+        @keyframes completePulse {
+          0%, 100% { box-shadow: 0 0 20px var(--era-color); }
+          50% { box-shadow: 0 0 35px var(--era-color), 0 0 50px var(--era-color); transform: scale(1.2); }
+        }
+
         .timeline-label {
           position: absolute;
           right: 100%;
@@ -127,6 +136,12 @@ const Timeline = ({ activeSection, onNavigate }) => {
           color: white;
           border: 1px solid rgba(255, 255, 255, 0.1);
           pointer-events: none;
+        }
+
+        @media (max-width: 1024px) and (min-width: 769px) {
+          .timeline-container { right: 1rem; height: 240px; }
+          .timeline-dot { width: 10px; height: 10px; }
+          .timeline-dot.active { width: 16px; height: 16px; }
         }
 
         @media (max-width: 768px) {

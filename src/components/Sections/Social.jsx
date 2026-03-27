@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion'; // eslint-disable-line no-unused-vars
 import gsap from 'gsap';
 import {
   Smartphone, Share2, MessageCircle, Heart,
@@ -329,6 +329,12 @@ const Social = ({ active }) => {
         .reply-input:focus { border-color: #3b82f6; }
         .reply-submit { background: #3b82f6; color: white; border: none; border-radius: 99px; padding: 0.4rem 0.8rem; font-size: 0.7rem; font-weight: bold; cursor: pointer; transition: opacity 0.2s; }
         .reply-submit:disabled { opacity: 0.5; cursor: not-allowed; background: #9ca3af; }
+
+        @media (max-width: 1024px) and (min-width: 769px) {
+          .social-layout { gap: 2rem; }
+          .phone-mockup { width: 240px; }
+          .app-grid { gap: 0.8rem; }
+        }
 
         @media (max-width: 768px) {
           .social-layout { flex-direction: column; }

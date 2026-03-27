@@ -20,11 +20,11 @@ const GlitchBackground = () => {
     let W = (canvas.width = window.innerWidth);
     let H = (canvas.height = window.innerHeight);
 
-    // Track scroll velocity for glitch intensity
+    // Track global scroll velocity for glitch intensity
     const st = ScrollTrigger.create({
-      trigger: '.hero',
+      trigger: document.documentElement,
       start: 'top top',
-      end: 'bottom top',
+      end: 'bottom bottom',
       onUpdate: (self) => {
         // scale scroll speed
         const speed = Math.abs(self.getVelocity() / 150);
@@ -127,22 +127,7 @@ const Hero = ({ active }) => {
     });
   }, [active]);
 
-  // WOW: Year reacts to scroll (parallax + scale)
-  useEffect(() => {
-    if (!sectionRef.current || !yearRef.current) return;
-    const st = ScrollTrigger.create({
-      trigger: sectionRef.current,
-      start: 'top top',
-      end: 'bottom top',
-      scrub: 0.5,
-      onUpdate: (self) => {
-        const p = self.progress;
-        yearRef.current.style.transform = `translateY(${p * 120}px) scale(${1 + p * 0.3})`;
-        yearRef.current.style.opacity = `${0.12 - p * 0.12}`;
-      },
-    });
-    return () => st.kill();
-  }, []);
+
 
   return (
     <section ref={sectionRef} className="section hero">
