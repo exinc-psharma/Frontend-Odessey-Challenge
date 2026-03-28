@@ -14,7 +14,7 @@ const Timeline = ({ activeSection, onNavigate }) => {
   const [hovered, setHovered] = useState(null);
 
   return (
-    <nav className="timeline-container">
+    <nav className={`timeline-container ${activeSection === 'dotcom' || activeSection === 'social' ? 'light-mode' : ''}`}>
       <div className="timeline-line" />
       <div className="timeline-markers">
         {eras.map((era, index) => {
@@ -70,6 +70,10 @@ const Timeline = ({ activeSection, onNavigate }) => {
           height: 100%;
           background: rgba(255, 255, 255, 0.1);
           border-radius: 2px;
+          transition: background 0.5s ease;
+        }
+        .timeline-container.light-mode .timeline-line {
+          background: rgba(0, 0, 0, 0.15);
         }
 
         .timeline-markers {
@@ -99,6 +103,9 @@ const Timeline = ({ activeSection, onNavigate }) => {
           transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
           position: relative;
           z-index: 2;
+        }
+        .timeline-container.light-mode .timeline-dot {
+          border-color: rgba(0, 0, 0, 0.3);
         }
 
         .timeline-dot.active {

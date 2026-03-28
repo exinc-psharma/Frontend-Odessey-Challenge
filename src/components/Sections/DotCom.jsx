@@ -319,7 +319,7 @@ const DotCom = ({ active }) => {
         @media (max-width: 768px) {
           .windows-container { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; padding: 4.5rem 1rem 1rem 1rem; align-items: stretch; }
           .retro-browser { max-width: 95%; }
-          .dotcom-title { font-size: 1.25rem; top: 1.5rem; left: 1rem; }
+          .dotcom-title { font-size: 1.25rem; top: 2.5rem; left: 1rem; }
           .window-body { padding: 0.6rem; }
         }
       `}</style>
