@@ -188,7 +188,6 @@ const Arpanet = ({ active }) => {
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
-        style={{ touchAction: 'none' }}
       >
 
 
@@ -312,7 +311,7 @@ const Arpanet = ({ active }) => {
           overflow-y: auto; color: rgba(0,255,65,0.8);
         }
         .terminal-log div { border-left: 1px solid rgba(0,255,65,0.15); padding-left: 8px; margin-bottom: 2px; }
-        .network-svg { flex: 1; max-width: 700px; height: 80vh; }
+        .network-svg { flex: 1; max-width: 700px; height: 80vh; touch-action: none; }
 
         @media (max-width: 1024px) and (min-width: 769px) {
           .arpanet { gap: 2rem; padding: 2rem 2rem; }
@@ -321,9 +320,10 @@ const Arpanet = ({ active }) => {
         }
 
         @media (max-width: 768px) {
-          .arpanet { flex-direction: column; align-items: center; }
-          .terminal-panel { width: 100%; min-width: auto; }
-          .network-svg { width: 100%; height: 50vh; }
+          .arpanet { flex-direction: column; align-items: center; padding: 1.5rem 1rem; gap: 1.5rem; }
+          .terminal-panel { width: 100%; min-width: auto; max-width: 340px; }
+          .terminal-log { max-height: 120px; } /* Prevent terminal from consuming all space */
+          .network-svg { width: 100%; height: 45vh; touch-action: pan-y; margin-bottom: 2rem; }
         }
       `}</style>
     </section>

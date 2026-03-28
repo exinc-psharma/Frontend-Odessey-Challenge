@@ -104,7 +104,7 @@ const DotCom = ({ active }) => {
             whileHover={{ y: -8, boxShadow: '8px 8px 20px rgba(0,0,0,0.3)' }}
             whileTap={{ scale: 0.97 }}
             className={`retro-window ${expandedId === site.id ? 'expanded' : ''}`}
-            style={{ '--win-color': site.color }}
+            style={{ '--win-color': site.color, display: 'flex', flexDirection: 'column', height: '100%' }}
             onClick={() => setExpandedId(expandedId === site.id ? null : site.id)}
           >
             <div className="window-header">
