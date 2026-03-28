@@ -341,13 +341,13 @@ const Social = ({ active }) => {
           .social-layout { flex-direction: column; align-items: center; gap: 1rem; }
           .social-header { margin-bottom: 1rem; text-align: center; }
           .social-header h2 { font-size: 1.6rem; margin-bottom: 0.2rem; }
-          .app-grid { grid-template-columns: repeat(4, 1fr); gap: 0.4rem; }
-          .app-card { padding: 0.4rem; }
-          .app-icon { width: 34px; height: 34px; border-radius: 8px; }
-          .app-badge { right: -4px; top: -4px; transform: scale(0.8); }
-          .app-name { font-size: 0.6rem; }
+          .app-grid { grid-template-columns: repeat(4, 1fr); gap: 0.8rem; }
+          .app-card { padding: 0.6rem; }
+          .app-icon { width: 44px; height: 44px; border-radius: 12px; }
+          .app-badge { right: -6px; top: -6px; transform: scale(0.9); }
+          .app-name { font-size: 0.65rem; }
           .app-sub { display: none; }
-          .phone-mockup { width: 100%; max-width: 250px; align-self: center; padding: 0.4rem; border-radius: 1.5rem; margin-top: -0.5rem; }
+          .phone-mockup { width: 100%; max-width: 280px; align-self: center; padding: 0.5rem; border-radius: 1.5rem; margin-top: 0; }
           .post-overlay-card { max-width: 95%; max-height: 80vh; overflow-y: auto; padding: 1rem; }
           .phone-screen { padding-bottom: 0.5rem; }
         }

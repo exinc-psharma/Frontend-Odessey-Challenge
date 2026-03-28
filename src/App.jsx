@@ -172,9 +172,15 @@ const App = () => {
     const idx = sections.findIndex((s) => s.id === id);
     if (idx < 0 || !mainST.current) return;
 
-    // Direct scroll math based on the single pinned timeline progress
+    // Exact chronological scroll mapping based on specific gsap duration injections
+    let timeAtSection = 0;
+    for (let i = 1; i <= idx; i++) {
+      timeAtSection += (i === sections.length - 1) ? 1.5 : 1;
+    }
+    const totalDuration = (sections.length - 2) * 1 + 1.5;
+
     const maxScroll = mainST.current.end - mainST.current.start;
-    const targetY = mainST.current.start + (idx / (sections.length - 1)) * maxScroll;
+    const targetY = mainST.current.start + (timeAtSection / totalDuration) * maxScroll;
 
     gsap.to(window, {
       scrollTo: { y: targetY, autoKill: true },

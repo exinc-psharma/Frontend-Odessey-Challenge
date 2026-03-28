@@ -317,9 +317,9 @@ const DotCom = ({ active }) => {
         }
 
         @media (max-width: 768px) {
-          .windows-container { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; padding: 5.5rem 1rem 1rem 1rem; align-items: stretch; }
+          .windows-container { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; padding: 6.5rem 1rem 1rem 1rem; align-items: stretch; }
           .retro-browser { max-width: 95%; }
-          .dotcom-title { font-size: 1.25rem; top: 3.2rem; left: 1rem; }
+          .dotcom-title { font-size: 1.25rem; top: 4.2rem; left: 1rem; }
           .window-body { padding: 0.6rem; }
         }
       `}</style>
