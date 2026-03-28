@@ -1,8 +1,8 @@
-# Frontend Odyssey: Evolution of the Internet
+# Digital Epochs: Evolution of the Web
 
 ## Overview
 
-The Frontend Odyssey is an interactive, cinematic chronicle documenting the evolution of the internet and digital interfaces from their inception to potential future states. Developed as a high-fidelity continuous scroll experience, the project serves as both an educational narrative and a demonstration of advanced frontend engineering techniques. The architecture smoothly transits between deeply contrasting historical paradigms—ranging from glowing phosphor terminal lines of the 1960s to the hardware-accelerated 3D geometries representing modern computational networks.
+Digital Epochs is an interactive, cinematic chronicle documenting the evolution of the internet and digital interfaces from their inception to potential future states. Developed as a high-fidelity continuous scroll experience, the project serves as both an educational narrative and a demonstration of advanced frontend engineering techniques. The architecture smoothly transits between deeply contrasting historical paradigms—ranging from glowing phosphor terminal lines of the 1960s to the hardware-accelerated 3D geometries representing modern computational networks.
 
 ## Architecture and Core Technologies
 
