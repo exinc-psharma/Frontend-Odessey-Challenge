@@ -83,9 +83,9 @@ const PostOverlay = ({ post, likedPosts, toggleLike, idx, onClose, onAddReply })
           <div className="replies-list" style={{ maxHeight: '180px', overflowY: 'auto', paddingRight: '10px' }}>
             {post.replies.map((r, i) => {
               const isYou = r.user === 'You';
-              const initial = isYou ? 'U' : r.user[0].toUpperCase();
-              const bgColor = isYou ? '#e5e7eb' : stringToColor(r.user);
-              const textColor = isYou ? '#666' : 'white';
+              const initial = isYou ? 'Y' : r.user[0].toUpperCase();
+              const bgColor = isYou ? '#3b82f6' : stringToColor(r.user);
+              const textColor = 'white';
               return (
                 <div key={i} className="reply-item">
                   <div className="reply-avatar" style={{ background: bgColor, color: textColor }}>{initial}</div>
