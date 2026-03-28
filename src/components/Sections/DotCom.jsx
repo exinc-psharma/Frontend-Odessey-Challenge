@@ -221,10 +221,12 @@ const DotCom = ({ active }) => {
           color: black; display: flex; align-items: center; justify-content: center; font-size: 8px;
         }
         .window-body {
+          flex: 1; display: flex; flex-direction: column;
           padding: 0.8rem; border: 1px solid #808080;
           border-right-color: #fff; border-bottom-color: #fff;
           margin: 2px; background: #fff;
         }
+        .window-content { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
         .window-content h3 { font-size: 1.1rem; margin-bottom: 0.25rem; color: var(--win-color); }
         .win-tagline { font-size: 0.7rem; font-style: italic; color: #666; margin-bottom: 0.3rem; }
         .win-year { font-size: 0.7rem; margin-bottom: 0.8rem; font-weight: bold; }
@@ -318,8 +320,7 @@ const DotCom = ({ active }) => {
           .windows-container { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; padding: 4.5rem 1rem 1rem 1rem; align-items: stretch; }
           .retro-browser { max-width: 95%; }
           .dotcom-title { font-size: 1.25rem; top: 1.5rem; left: 1rem; }
-          .window-body { flex: 1; display: flex; flex-direction: column; padding: 0.6rem; }
-          .window-content { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+          .window-body { padding: 0.6rem; }
         }
       `}</style>
     </section>
