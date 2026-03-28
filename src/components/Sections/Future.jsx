@@ -18,7 +18,7 @@ const NeonField = () => {
 
     const isMobile = W < 768;
     const isTablet = W >= 768 && W <= 1024;
-    const count = isMobile ? 35 : isTablet ? 50 : 80;
+    const count = isMobile ? 30 : isTablet ? 45 : 60;
 
     const particles = Array.from({ length: count }, () => ({
       x: Math.random() * W,
@@ -31,35 +31,19 @@ const NeonField = () => {
 
     const animate = () => {
       ctx.clearRect(0, 0, W, H);
-      particles.forEach((p) => {
-        p.x += p.dx;
-        p.y += p.dy;
-        if (p.x < 0 || p.x > W) p.dx *= -1;
-        if (p.y < 0 || p.y > H) p.dy *= -1;
-
-        // Glow effect
-        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
-        grad.addColorStop(0, `hsla(${p.hue}, 100%, 70%, 0.6)`);
-        grad.addColorStop(1, `hsla(${p.hue}, 100%, 70%, 0)`);
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
-        ctx.fillStyle = grad;
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${p.hue}, 100%, 75%, 0.7)`;
-        ctx.fill();
-      });
-
-      // Dense connection web
+      
       const connectDist = isMobile ? 80 : isTablet ? 95 : 110;
+      const connectDistSq = connectDist * connectDist;
+
+      // ── Draw Connection Web ──
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < connectDist) {
+          const distSq = dx * dx + dy * dy;
+          
+          if (distSq < connectDistSq) {
+            const dist = Math.sqrt(distSq);
             const alpha = 0.15 * (1 - dist / connectDist);
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
@@ -70,6 +54,25 @@ const NeonField = () => {
           }
         }
       }
+
+      // ── Draw Particles ──
+      particles.forEach((p) => {
+        p.x += p.dx;
+        p.y += p.dy;
+        if (p.x < 0 || p.x > W) p.dx *= -1;
+        if (p.y < 0 || p.y > H) p.dy *= -1;
+
+        // Optimized Glow (Concentric circles instead of radial gradient)
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${p.hue}, 100%, 70%, 0.15)`;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${p.hue}, 100%, 75%, 0.7)`;
+        ctx.fill();
+      });
       animRef.current = requestAnimationFrame(animate);
     };
     animate();

@@ -40,12 +40,10 @@ const FadingParticles = () => {
         if (p.x < 0 || p.x > W) p.dx *= -1;
         if (p.y < 0 || p.y > H) p.dy *= -1;
 
-        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
-        grad.addColorStop(0, `hsla(${p.hue}, 80%, 65%, ${p.alpha})`);
-        grad.addColorStop(1, `hsla(${p.hue}, 80%, 65%, 0)`);
+        // Optimized Glow
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
-        ctx.fillStyle = grad;
+        ctx.fillStyle = `hsla(${p.hue}, 80%, 65%, ${p.alpha * 0.3})`;
         ctx.fill();
 
         ctx.beginPath();
