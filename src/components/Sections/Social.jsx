@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'; // eslint-disable-line 
 import gsap from 'gsap';
 import {
   Smartphone, Share2, MessageCircle, Heart,
-  Bell, Camera, Play, Users, Search, Send
+  Bell, Camera, Play, Users, Search, Send, X
 } from 'lucide-react';
 
 
@@ -36,7 +36,15 @@ const stringToColor = (str) => {
 
 
 
-/* ── WOW: Expandable Post Overlay ── */
+/* -------------------------------------------------------------------------- */
+/*                        INTERACTIVE POST OVERLAY COMPONENT                  */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * PostOverlay Component
+ * Renders an expanded view of a social post, including like/interaction
+ * metrics and a fully functional nested reply system.
+ */
 const PostOverlay = ({ post, likedPosts, toggleLike, idx, onClose, onAddReply }) => {
   const [replyText, setReplyText] = useState('');
 
@@ -65,7 +73,7 @@ const PostOverlay = ({ post, likedPosts, toggleLike, idx, onClose, onAddReply })
       >
         <div className="overlay-close" onClick={onClose}><X size={18} /></div>
         <div className="overlay-header">
-          <div className="post-avatar-lg">{post.user[0].toUpperCase()}</div>
+          <div className="post-avatar-lg">{post?.user?.[0]?.toUpperCase() || '?'}</div>
           <div>
             <div className="overlay-username">@{post.user}</div>
             <div className="overlay-time">{post.time}</div>
@@ -88,7 +96,7 @@ const PostOverlay = ({ post, likedPosts, toggleLike, idx, onClose, onAddReply })
           <div className="replies-list" style={{ maxHeight: '180px', overflowY: 'auto', paddingRight: '10px' }}>
             {post.replies.map((r, i) => {
               const isYou = r.user === 'You';
-              const initial = isYou ? 'Y' : r.user[0].toUpperCase();
+              const initial = isYou ? 'Y' : (r?.user?.[0]?.toUpperCase() || '?');
               const bgColor = isYou ? '#3b82f6' : stringToColor(r.user);
               const textColor = 'white';
               return (
